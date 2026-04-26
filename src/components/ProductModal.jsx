@@ -34,20 +34,29 @@ const ProductModal = ({ product, onClose }) => {
   /* Indica si el producto ya está en el carrito (para cambiar el botón) */
   const inCart = items.some((i) => i.id === product.id);
 
-  /* Cierra el modal al presionar Escape */
+  // useEffect para registrar un listener de teclado mientras el modal esté abierto.
+  // El array de dependencias [onClose] significa: ejecutar este efecto cada vez
+  // que cambie la referencia de `onClose`.
+  //
+  // La función de limpieza (return) es fundamental aquí: cuando el modal se
+  // desmonta (se cierra), React ejecuta esa función para eliminar el listener.
+  // Sin la limpieza, el listener quedaría activo en memoria aunque el modal
+  // ya no exista, causando "memory leaks" y comportamientos inesperados.
   useEffect(() => {
     const handleKey = (e) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey); // limpieza
   }, [onClose]);
 
-  /* Bloquea el scroll del body mientras el modal está abierto */
+  // Segundo useEffect: bloquea el scroll del body mientras el modal esté abierto.
+  // El array vacío [] significa: ejecutar solo al montar el componente (una vez).
+  // La función de limpieza restaura el scroll al desmontar (cuando se cierra el modal).
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = ""; // restaura el scroll al cerrar
     };
   }, []);
 

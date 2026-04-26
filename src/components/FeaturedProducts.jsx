@@ -35,10 +35,15 @@ const FeaturedProducts = ({ onViewAll, onProductClick }) => {
         {/* Grilla de tarjetas de productos destacados */}
         <div className="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-6">
           {featured.map((p) => (
+            // `key` es una prop especial de React: le permite identificar cada elemento
+            // de la lista para actualizar solo los que cambian, en lugar de re-renderizar
+            // todos. Debe ser único y estable (usamos el id del producto).
+            // El spread {...p} equivale a escribir id={p.id} name={p.name} price={p.price} ...
+            // Es un atajo para pasar todas las propiedades del objeto como props.
             <ProductCard
               key={p.id}
               {...p}
-              showAdd={false}
+              showAdd={false} // ocultamos el botón en destacados (no hay acción directa)
               onDetailClick={onProductClick}
             />
           ))}

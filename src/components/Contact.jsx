@@ -26,51 +26,79 @@ const EMPTY_TOUCHED = { name: false, email: false, message: false };
  * Contact
  * Sección de contacto con información del local y formulario de mensaje.
  * Valida con Yup en tiempo real (blur) y al intentar enviar.
+ *
+ * Concepto clave — Formulario controlado (Controlled Component):
+ * En HTML clásico, los inputs guardan su propio valor internamente.
+ * En React, el valor de cada input lo controla el estado de React.
+ * El flujo es: usuario escribe → onChange actualiza el estado → React re-renderiza
+ * con el nuevo valor en el input. Esto nos da control total para validar,
+ * formatear o bloquear caracteres en tiempo real.
  */
 const Contact = () => {
+  // Un solo objeto agrupa los valores de los tres campos del formulario
   const [form, setForm] = useState(EMPTY_FORM);
+
+  // Otro objeto agrupa los mensajes de error de cada campo
   const [errors, setErrors] = useState(EMPTY_ERRORS);
+
+  // Registra qué campos el usuario ya visitó (focus + blur).
+  // Solo mostramos errores en campos que el usuario ya "tocó", para no
+  // asustar con errores en un formulario recén abierto.
   const [touched, setTouched] = useState(EMPTY_TOUCHED);
+
+  // true durante 5 segundos después de un envío exitoso → muestra pantalla de éxito
   const [sent, setSent] = useState(false);
 
-  /* Valida un campo individual con Yup y actualiza su error */
+  // Valida UN campo individual con Yup y actualiza solo su error.
+  // schema.validateAt(campo, valores) es más eficiente que validar todo el form.
+  // Como Yup devuelve una Promise, usamos .then/.catch en lugar de async/await
+  // para no bloquear el flujo mientras el usuario escribe.
   const validateField = (name, value) => {
     schema
       .validateAt(name, { ...form, [name]: value })
-      .then(() => setErrors((prev) => ({ ...prev, [name]: "" })))
-      .catch((err) => setErrors((prev) => ({ ...prev, [name]: err.message })));
+      .then(() => setErrors((prev) => ({ ...prev, [name]: "" }))) // válido → limpia el error
+      .catch((err) => setErrors((prev) => ({ ...prev, [name]: err.message }))); // inválido → guarda el mensaje
   };
 
-  /* Actualiza el valor y revalida si el campo ya fue tocado */
+  // Se ejecuta en cada tecla.
+  // El spread { ...prev, [name]: value } crea un objeto nuevo con el campo actualizado.
+  // No mutamos el estado directamente (prev.name = value) porque React no detectaría el cambio.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    // Solo revalidamos si el campo ya fue tocado, evitando errores prematuros
     if (touched[name]) validateField(name, value);
   };
 
-  /* Marca el campo como tocado y dispara validación al salir */
+  /* Marca el campo como tocado y dispara validación al salir (onBlur = cuando pierde el foco) */
   const handleBlur = (e) => {
     const { name, value } = e.target;
     setTouched((prev) => ({ ...prev, [name]: true }));
     validateField(name, value);
   };
 
-  /* Valida todo el formulario; envía si no hay errores */
+  // Se ejecuta al hacer Submit del formulario.
+  // e.preventDefault() evita que el navegador recargue la página (comportamiento por defecto).
+  // abortEarly: false le dice a Yup que valide TODOS los campos y devuelva todos los errores,
+  // en lugar de detenerse al primer error.
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await schema.validate(form, { abortEarly: false });
+      // Formulario válido: mostrar éxito, limpiar estado y ocultar tras 5 segundos
       setSent(true);
       setForm(EMPTY_FORM);
       setErrors(EMPTY_ERRORS);
       setTouched(EMPTY_TOUCHED);
       setTimeout(() => setSent(false), 5000);
     } catch (err) {
+      // err.inner contiene un array con todos los errores; los volcamos al objeto de errores
       const newErrors = { ...EMPTY_ERRORS };
       err.inner.forEach((ve) => {
         newErrors[ve.path] = ve.message;
       });
       setErrors(newErrors);
+      // Marcamos todos como tocados para que los errores se muestren visualmente
       setTouched({ name: true, email: true, message: true });
     }
   };

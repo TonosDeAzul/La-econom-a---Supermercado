@@ -6,8 +6,15 @@ import { useCart } from "../context/CartContext";
  * Se abre sobre la pantalla cuando el usuario hace clic en el ícono del carrito.
  *
  * Props:
- *   - open    : booleano que controla si el drawer está abierto
- *   - onClose : función para cerrar el drawer
+ *   - open      : booleano que controla si el drawer está abierto
+ *   - onClose   : función para cerrar el drawer
+ *   - onCheckout: función para navegar al checkout
+ *
+ * Patrón de visibilidad con clases Tailwind:
+ * El panel siempre está en el DOM pero su posición cambia con translate-x.
+ *   - open=true  → translate-x-0 (visible, en su lugar)
+ *   - open=false → translate-x-full (desplazado fuera de la pantalla a la derecha)
+ * La transición CSS anima suavemente entre los dos estados.
  */
 const CartDrawer = ({ open, onClose, onCheckout }) => {
   const { items, updateQty, remove, clear, total, count } = useCart();

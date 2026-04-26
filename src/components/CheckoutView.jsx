@@ -18,19 +18,25 @@ const LS_KEY = "delivery_info";
 const CheckoutView = ({ onConfirm, onBack }) => {
   const { items, total, count, clear } = useCart();
 
-  /* Paso actual del flujo */
+  // El paso actual del flujo controla qué "pantalla" se muestra.
+  // Cuando setStep cambia este valor, React re-renderiza el componente
+  // y los if/return de abajo determinan qué JSX devolver.
   const [step, setStep] = useState("payment");
 
   /* Método de pago seleccionado — solo 'cash' disponible por ahora */
   const [paymentMethod, setPaymentMethod] = useState("cash");
 
-  /* Número de pedido aleatorio — estable durante toda la sesión del componente */
+  // useMemo memoriza el resultado de una función y solo lo recalcula
+  // cuando cambian las dependencias (aquí el array está vacío: nunca recalcula).
+  // Lo usamos aquí para que el número de orden sea aleatorio pero estable:
+  // si usáramos Math.random() directo en el JSX, cambiaría en cada re-render.
   const orderNumber = useMemo(
     () => Math.floor(Math.random() * 90000) + 10000,
-    [],
+    [], // ← array vacío = calcular solo una vez al montar el componente
   );
 
-  /* Lee la info de entrega guardada por Hero en localStorage */
+  // Otro useMemo para leer localStorage una sola vez.
+  // La info fue guardada por Hero.jsx cuando el usuario confirmó su dirección.
   const deliveryInfo = useMemo(() => {
     try {
       return JSON.parse(localStorage.getItem(LS_KEY) || "{}");
@@ -39,10 +45,10 @@ const CheckoutView = ({ onConfirm, onBack }) => {
     }
   }, []);
 
-  /* Confirma el pedido: limpia el carrito y muestra la pantalla de éxito */
+  /* Confirma el pedido: limpia el carrito y avanza al paso de éxito */
   const handleConfirmOrder = () => {
-    clear();
-    setStep("success");
+    clear(); // vacía el carrito global a través del contexto
+    setStep("success"); // cambia el paso → React mostrará el JSX de éxito
   };
 
   /* ── Pantalla de éxito ─────────────────────────────────── */

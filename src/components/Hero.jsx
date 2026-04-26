@@ -22,25 +22,32 @@ const addressSchema = yup.object({
  * Hero
  * Sección principal de bienvenida con llamada a la acción.
  * Props:
- *   - onOrderNow : función que navega al catálogo
+ *   - onOrderNow : función que navega al catálogo (viene de App.jsx)
  */
 const Hero = ({ onOrderNow }) => {
   /* Modo activo: 'delivery' entrega a domicilio | 'retiro' en local */
   const [mode, setMode] = useState("delivery");
 
-  /* Dirección escrita por el usuario, pre-cargada desde localStorage */
+  // Inicializador diferido de useState: en lugar de pasar un valor directo,
+  // pasamos una función que React ejecuta UNA sola vez al montar el componente.
+  // Esto es ideal para leer localStorage, porque si pasáramos el valor directo
+  // esa lectura ocurriría en cada re-render, siendo innecesaria y lenta.
   const [address, setAddress] = useState(() => {
     try {
+      // Intentamos recuperar la dirección guardada en el último uso de la app.
+      // JSON.parse convierte el string guardado de vuelta a objeto JavaScript.
+      // Si no hay nada guardado, usamos {} como fallback para evitar errores.
       return JSON.parse(localStorage.getItem(LS_KEY) || "{}").address || "";
     } catch {
+      // Si el valor en localStorage está corrupto o no es JSON válido, empezamos vacío
       return "";
     }
   });
 
-  /* Mensaje de error de validación Yup */
+  /* Mensaje de error de validación Yup ("” = sin error) */
   const [error, setError] = useState("");
 
-  /* Controla la animación de shake al fallar la validación */
+  /* Dispara la animación de "shake" cuando la validación falla */
   const [shake, setShake] = useState(false);
 
   /* Cambia el modo y limpia cualquier error previo */
@@ -49,23 +56,32 @@ const Hero = ({ onOrderNow }) => {
     setError("");
   };
 
-  /* Valida la dirección (solo en delivery), guarda en localStorage y navega */
+  // Función async: usa async/await para esperar la validación de Yup.
+  // Las funciones async siempre devuelven una Promise, pero con await
+  // podemos escribirlas como si fueran síncronas.
   const handleConfirm = async () => {
     if (mode === "delivery") {
       try {
+        // addressSchema.validate() lanza un error si la dirección no cumple las reglas.
+        // Si no lanza, la dirección es válida y podemos continuar.
         await addressSchema.validate({ address });
+        // Guardamos en localStorage para que esté disponible en CheckoutView
         localStorage.setItem(
           LS_KEY,
           JSON.stringify({ address, mode: "delivery" }),
         );
         setError("");
-        onOrderNow();
+        onOrderNow(); // Llama la función de App.jsx que cambia la vista a 'catalog'
       } catch (err) {
+        // Yup lanza un objeto con .message que contiene el texto del error definido en el esquema
         setError(err.message);
         setShake(true);
+        // setTimeout es nativa del navegador: ejecuta la función después de N milisegundos.
+        // Aquí usamos para apagar la animación tras 500ms.
         setTimeout(() => setShake(false), 500);
       }
     } else {
+      // En modo retiro no se necesita validar: guardamos la dirección del local
       localStorage.setItem(
         LS_KEY,
         JSON.stringify({ address: STORE_ADDRESS, mode: "retiro" }),

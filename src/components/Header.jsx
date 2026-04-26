@@ -11,6 +11,8 @@ const Header = ({
   onCatalogSearch,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  // useCart() obtiene el conteo del carrito desde el Context global.
+  // Este componente no necesita saber cómo se calcula; solo consume el valor.
   const { count } = useCart();
 
   const closeMenu = () => setMenuOpen(false);
@@ -20,7 +22,11 @@ const Header = ({
     closeMenu();
   };
 
-  /* ── Modo checkout: barra mínima con botón volver ── */
+  // Patrón "early return": en lugar de un if/else gigante, devolvemos JSX
+  // diferente según la vista activa. React ejecuta el primer return que encuentre.
+  // Esto mantiene cada modo de header separado y fácil de leer.
+
+  /* ── Modo checkout: barra mínima sin distracciones ── */
   if (view === "checkout") {
     return (
       <header className="fixed top-0 left-0 right-0 z-[1000] bg-white border-b border-gray-200 shadow-sm h-16">

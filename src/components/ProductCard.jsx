@@ -40,7 +40,9 @@ const ProductCard = ({
   /* Estado de error de imagen: si falla la carga se muestra el emoji */
   const [imgError, setImgError] = useState(false);
 
-  /* Indica si el producto ya está en el carrito (para cambiar el botón) */
+  /* Indica si el producto ya está en el carrito (para cambiar el texto y color del botón) */
+  // items.some() recorre el array y devuelve true si al menos uno cumple la condición.
+  // Este valor se recalcula en cada render automáticamente cuando `items` cambia.
   const inCart = items.some((i) => i.id === id);
 
   /* Agrega el producto al carrito con todos sus datos */
@@ -112,6 +114,9 @@ const ProductCard = ({
                   : "bg-brand-light text-brand hover:bg-brand hover:text-white"
               }`}
               onClick={(e) => {
+                // stopPropagation() evita que el clic en el botón "burbujee" hacia arriba
+                // y llegue al onClick de la tarjeta (que abriría el modal).
+                // Sin esto, agregar al carrito también abriría el detalle del producto.
                 e.stopPropagation();
                 inCart ? handleRemove() : handleAdd();
               }}
