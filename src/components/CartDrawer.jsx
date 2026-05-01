@@ -17,25 +17,24 @@ import { useCart } from "../context/CartContext";
  * La transición CSS anima suavemente entre los dos estados.
  */
 const CartDrawer = ({ open, onClose, onCheckout }) => {
+  // Extraer del contexto del carrito de compras las funciones y datos principales
   const { items, updateQty, remove, clear, total, count } = useCart();
 
   return (
     <>
       {/* Overlay oscuro — al hacer clic cierra el carrito */}
       <div
-        className={`fixed inset-0 z-[2000] bg-black/45 backdrop-blur-[3px] transition-opacity duration-300 ${
-          open
+        className={`fixed inset-0 z-[2000] bg-black/45 backdrop-blur-[3px] transition-opacity duration-300 ${open
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
-        }`}
+          }`}
         onClick={onClose}
       />
 
       {/* Panel deslizante desde la derecha */}
       <div
-        className={`fixed top-0 right-0 bottom-0 w-[400px] max-w-full bg-white z-[2001] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 bottom-0 w-[400px] max-w-full bg-white z-[2001] flex flex-col shadow-2xl transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-full"
+          }`}
         role="dialog"
         aria-label="Carrito de compras"
       >

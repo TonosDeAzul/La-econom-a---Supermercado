@@ -21,6 +21,8 @@ import CatalogView from "./components/CatalogView";
 import CartDrawer from "./components/CartDrawer";
 import ProductModal from "./components/ProductModal";
 import CheckoutView from "./components/CheckoutView";
+import NoticesView from "./components/NoticesView";
+import NoticesPreview from "./components/NoticesPreview";
 
 /**
  * AppContent
@@ -39,7 +41,8 @@ function AppContent() {
   // Cuando llamás a la función de actualización, React vuelve a renderizar
   // el componente con el nuevo valor. Nunca modifiques la variable directamente.
 
-  /* Vista activa: determina qué pantalla se muestra */
+  // Define un estado para controlar qué vista/pantalla se muestra, con "home" como valor inicial. 
+  // Se cambia con setView("otraVista") para navegar entre secciones.
   const [view, setView] = useState("home");
 
   /* Guarda qué vista estaba activa antes de entrar a checkout (para el botón “volver”) */
@@ -148,6 +151,7 @@ function AppContent() {
           <Hero onOrderNow={() => navigate("catalog")} />
           <FeaturedProducts onViewAll={() => navigate("catalog")} />
           <Prices />
+          <NoticesPreview onVerTodas={() => navigate("noticias")} />
           <Contact />
         </main>
       ) : view === "catalog" ? (
@@ -155,6 +159,8 @@ function AppContent() {
           externalSearch={catalogSearch} // búsqueda escrita en el header
           onProductClick={setSelectedProduct} // al hacer clic en producto → abre modal
         />
+      ) : view === "noticias" ? (
+        <NoticesView />
       ) : (
         <CheckoutView
           onConfirm={() => navigate("home")} // al confirmar compra → vuelve a inicio

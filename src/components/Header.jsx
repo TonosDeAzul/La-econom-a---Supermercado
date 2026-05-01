@@ -56,6 +56,29 @@ const Header = ({
     );
   }
 
+  /* ── Modo noticias: barra compacta con título ── */
+  if (view === "noticias") {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-[1000] bg-white border-b border-gray-200 shadow-sm h-16">
+        <div className="h-full max-w-7xl mx-auto px-6 flex items-center gap-3">
+          <button
+            className="w-9 h-9 flex items-center justify-center border-[1.5px] border-gray-200 rounded-full bg-transparent cursor-pointer text-lg text-app-dark transition-all hover:border-brand hover:text-brand hover:bg-brand-light"
+            onClick={() => onNavigateTo("home")}
+            aria-label="Volver al inicio"
+          >
+            &#8592;
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">📰</span>
+            <span className="font-extrabold text-app-dark text-[1rem]">
+              Noticias del Super
+            </span>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   /* ── Modo catálogo: barra compacta con búsqueda ── */
   if (view === "catalog") {
     return (
@@ -147,9 +170,8 @@ const Header = ({
 
         {/* Navegación — oculta en mobile, visible en desktop; o abierta por hamburguesa */}
         <nav
-          className={`${
-            menuOpen ? "flex" : "hidden"
-          } md:flex flex-col md:flex-row items-start md:items-center gap-1 absolute md:static top-[72px] left-0 right-0 bg-white md:bg-transparent p-4 md:p-0 shadow-lg md:shadow-none z-50`}
+          className={`${menuOpen ? "flex" : "hidden"
+            } md:flex flex-col md:flex-row items-start md:items-center gap-1 absolute md:static top-[72px] left-0 right-0 bg-white md:bg-transparent p-4 md:p-0 shadow-lg md:shadow-none z-50`}
         >
           <button
             className="px-4 py-1.5 rounded-full text-sm font-medium text-brand bg-brand-light border-none cursor-pointer w-full md:w-auto text-left md:text-center"
@@ -171,6 +193,12 @@ const Header = ({
             onClick={() => handleSection("#precios")}
           >
             Precios
+          </button>
+          <button
+            className="px-4 py-1.5 rounded-full text-sm font-medium text-gray-500 bg-transparent border-none cursor-pointer transition-all hover:text-brand hover:bg-brand-light w-full md:w-auto text-left md:text-center"
+            onClick={() => handleSection("#noticias")}
+          >
+            Noticias
           </button>
           <button
             className="px-4 py-1.5 rounded-full text-sm font-medium text-gray-500 bg-transparent border-none cursor-pointer transition-all hover:text-brand hover:bg-brand-light w-full md:w-auto text-left md:text-center"

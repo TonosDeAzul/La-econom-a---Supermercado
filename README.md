@@ -14,11 +14,9 @@ Incluye catálogo de productos, lista de precios, carrito de compras, formulario
 
 ```
 supermercado-react/
-├── public/
-│   └── images/                  # Imágenes de los productos
 ├── src/
 │   ├── components/
-│   │   ├── Header.jsx           # Encabezado y navegación (home / catálogo / checkout)
+│   │   ├── Header.jsx           # Encabezado y navegación (home / catálogo / checkout / noticias)
 │   │   ├── Hero.jsx             # Sección principal con barra delivery/retiro
 │   │   ├── FeaturedProducts.jsx # Grilla de productos destacados
 │   │   ├── ProductCard.jsx      # Tarjeta individual de producto
@@ -29,11 +27,15 @@ supermercado-react/
 │   │   ├── CatalogView.jsx      # Vista del catálogo con filtros y ordenamiento
 │   │   ├── CartDrawer.jsx       # Panel lateral deslizante del carrito
 │   │   ├── CheckoutView.jsx     # Flujo de checkout (pago → resumen → confirmación)
+│   │   ├── NoticiasPreview.jsx  # Sección de inicio con últimas 3 noticias (solo lectura)
+│   │   ├── NoticiasView.jsx     # Vista completa de noticias con CRUD
 │   │   └── Footer.jsx           # Pie de página
 │   ├── context/
 │   │   └── CartContext.jsx      # Contexto global del carrito
 │   ├── data/
 │   │   └── products.js          # Catálogo de 100 productos
+│   ├── services/
+│   │   └── noticiasApi.js       # Capa de servicio CRUD sobre JSONPlaceholder /posts
 │   ├── App.jsx                  # Componente raíz y navegación entre vistas
 │   ├── main.jsx                 # Punto de entrada de React
 │   └── index.css                # Tema Tailwind + animaciones globales
@@ -111,6 +113,8 @@ Todos los productos están en `src/data/products.js`. Cada producto tiene la sig
 | `CatalogView`      | Catálogo completo con dropdown de categoría, ordenamiento y búsqueda                          |
 | `CartDrawer`       | Panel lateral deslizante con resumen del carrito                                              |
 | `CheckoutView`     | Flujo de 3 pasos: método de pago → resumen → confirmación                                     |
+| `NoticiasPreview`  | Sección de inicio con las últimas 3 noticias en modo lectura y botón a la vista completa      |
+| `NoticiasView`     | Vista completa de noticias con CRUD (crear, leer, editar, eliminar)                           |
 | `Footer`           | Pie de página con navegación, categorías y datos de contacto                                  |
 
 ## Funcionalidades principales
@@ -122,3 +126,4 @@ Todos los productos están en `src/data/products.js`. Cada producto tiene la sig
 - **Delivery / Retiro**: el Hero guarda la selección en `localStorage` (`delivery_info`) y valida la dirección con Yup en modo delivery
 - **Checkout**: selección de pago en efectivo (tarjeta próximamente), resumen del pedido y confirmación
 - **Validación de contacto**: errores por campo al salir del input (`onBlur`) con esquema Yup
+- **Noticias del Super**: sección de inicio con preview de 3 noticias (solo lectura) y vista completa con CRUD completo (GET, POST, PUT, DELETE) sobre la API [JSONPlaceholder](https://jsonplaceholder.typicode.com/)

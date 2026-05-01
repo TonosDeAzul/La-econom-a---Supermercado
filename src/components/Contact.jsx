@@ -105,14 +105,13 @@ const Contact = () => {
 
   /* Clases del input: cambia el borde a rojo si hay error en ese campo */
   const inputCls = (field) =>
-    `w-full px-[18px] py-[13px] border-[1.5px] rounded-lg text-[0.95rem] text-app-dark bg-white outline-none transition-all resize-none ${
-      errors[field]
-        ? "border-red-400 focus:border-red-400 focus:ring-2 focus:ring-red-100"
-        : "border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand/10"
+    `w-full px-[18px] py-[13px] border-[1.5px] rounded-lg text-[0.95rem] text-app-dark bg-white outline-none transition-all resize-none ${errors[field]
+      ? "border-red-400 focus:border-red-400 focus:ring-2 focus:ring-red-100"
+      : "border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand/10"
     }`;
 
   return (
-    <section className="py-20 px-8 bg-gray-100" id="contacto">
+    <section className="py-20 px-8 bg-white" id="contacto">
       <div className="max-w-7xl mx-auto">
         {/* Encabezado de sección */}
         <div className="text-center mb-12">
@@ -179,7 +178,7 @@ const Contact = () => {
           </div>
 
           {/* Formulario de contacto */}
-          <div className="bg-white rounded-3xl p-10 shadow-md">
+          <div className="bg-gray-100 rounded-3xl p-10 shadow-md">
             <h3 className="text-[1.3rem] font-extrabold text-app-dark mb-7">
               Enviános un mensaje
             </h3>
